@@ -8,13 +8,14 @@ const axiosInstance = axios.create({
   },
 })
 
-axiosInstance.interceptors.response.use(
-  (response) => {
-    const token = localStorage.getItem("access_token")
-    if (token) {
-      response.headers["Authorization"] = `Bearer ${token}`
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("access_token")
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
-    return response
+
+    return config
   },
   (error) => {
     if (axios.isCancel(error)) {
@@ -26,9 +27,9 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    return config
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response
   },
   (error) => {
     if (axios.isCancel(error)) {
