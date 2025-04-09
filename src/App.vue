@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
+import { RouterView } from "vue-router"
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools"
 
-const isLocal = import.meta.env.VITE_APP_ENV === 'local'
+const isLocal = import.meta.env.VITE_APP_ENV === "local"
 </script>
 
 <template>
