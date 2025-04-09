@@ -9,7 +9,7 @@ import { z } from "zod"
 const depositPayloadSchema = z.object({
   amount: z
     .number()
-    .min(1, { message: "Required" })
+    .min(1, { message: "Amount deposit at least 1" })
     .refine((val) => Number(val.toFixed(2)) === val, {
       message: "Amount must have exactly two decimal places (e.g., 1000.00)",
     }),

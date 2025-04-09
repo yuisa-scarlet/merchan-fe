@@ -10,6 +10,10 @@ interface Profile {
   role: Role
 }
 
+/* ============ *
+ * GET profile *
+ * ============ */
+
 async function profile(): Promise<Profile> {
   const response = await axiosInstance.get("/v1/profile")
   return response.data.data

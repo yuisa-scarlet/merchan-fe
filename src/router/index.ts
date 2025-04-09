@@ -51,11 +51,6 @@ const routes = createRouter({
           name: "dashboard.client",
           component: () => import("@/views/dashboard/DashboardView.vue"),
         },
-        {
-          path: "transactions",
-          name: "transactions.client",
-          component: () => import("@/views/transaction/TransactionView.vue"),
-        },
       ],
     },
     {
@@ -67,11 +62,6 @@ const routes = createRouter({
           path: "dashboard",
           name: "dashboard.admin",
           component: () => import("@/views/dashboard/DashboardView.vue"),
-        },
-        {
-          path: "transactions",
-          name: "transactions.admin",
-          component: () => import("@/views/transaction/TransactionView.vue"),
         },
       ],
     },

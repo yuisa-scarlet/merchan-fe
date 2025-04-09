@@ -18,7 +18,7 @@ import { Bars3Icon, ChevronDownIcon, XMarkIcon } from "@heroicons/vue/24/outline
 import { BanknoteArrowUp, BanknoteArrowDown } from "lucide-vue-next"
 import { ref } from "vue"
 import { useRouter } from "vue-router"
-import { RouterLink, RouterView } from "vue-router"
+import { RouterView } from "vue-router"
 
 const router = useRouter()
 const role = localStorage.getItem("role")
@@ -28,12 +28,7 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 }
 
-const navigation = [
-  { name: "Overview", href: "dashboard" },
-  { name: "Transactions", href: "transactions" },
-]
-
-const userNavigation = [{ name: "Your Profile", href: "#" }]
+const navigation = [{ name: "Overview", href: "dashboard" }]
 
 const { data: profile } = useProfile()
 const { mutate: logoutMutate } = useLogout()
@@ -164,17 +159,6 @@ const showWithdraw = ref(false)
                         <div class="text-sm font-medium text-gray-500">{{ profile?.email }}</div>
                       </div>
                     </MenuItem>
-                    <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                      <RouterLink
-                        :to="item.href"
-                        :class="[
-                          active ? 'bg-gray-100 outline-none' : '',
-                          'block px-4 py-2 text-sm text-gray-700',
-                        ]"
-                      >
-                        {{ item.name }}
-                      </RouterLink>
-                    </MenuItem>
                     <MenuItem>
                       <button
                         @click="handleLogout"
@@ -217,17 +201,6 @@ const showWithdraw = ref(false)
               <div class="text-base font-medium text-gray-800">{{ profile?.name }}</div>
               <div class="text-sm font-medium text-gray-500">{{ profile?.email }}</div>
             </div>
-          </div>
-          <div class="mt-3 space-y-1">
-            <DisclosureButton
-              v-for="item in userNavigation"
-              :key="item.name"
-              as="a"
-              :href="item.href"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-            >
-              {{ item.name }}
-            </DisclosureButton>
           </div>
         </div>
       </DisclosurePanel>
