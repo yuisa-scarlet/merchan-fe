@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useLogout } from "@/api/auth"
+import { useProfile } from "@/api/user"
 import NavLinkDashboard from "@/components/ui/NavLinkDashboard.vue"
 import Slideover from "@/components/ui/Slideover.vue"
+import DepositForm from "@/views/deposit/DepositForm.vue"
+import WithdrawForm from "@/views/withdraw/WithdrawForm.vue"
 import {
   Disclosure,
   DisclosureButton,
@@ -18,10 +21,9 @@ import { useRouter } from "vue-router"
 import { RouterLink, RouterView } from "vue-router"
 
 const router = useRouter()
+const role = localStorage.getItem("role")
 
 const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
   imageUrl:
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 }
@@ -33,6 +35,7 @@ const navigation = [
 
 const userNavigation = [{ name: "Your Profile", href: "#" }]
 
+const { data: profile } = useProfile()
 const { mutate: logoutMutate } = useLogout()
 
 function handleLogout() {
@@ -68,7 +71,7 @@ const showWithdraw = ref(false)
             </div>
           </div>
           <div class="flex gap-2">
-            <div class="text-right">
+            <div class="text-right" v-if="role === 'user'">
               <Menu as="div" class="relative inline-block text-left" v-slot="{ open }">
                 <div>
                   <MenuButton
@@ -155,6 +158,12 @@ const showWithdraw = ref(false)
                   <MenuItems
                     class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
                   >
+                    <MenuItem>
+                      <div class="ml-3 py-2">
+                        <div class="text-sm font-medium text-gray-800">{{ profile?.name }}</div>
+                        <div class="text-sm font-medium text-gray-500">{{ profile?.email }}</div>
+                      </div>
+                    </MenuItem>
                     <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
                       <RouterLink
                         :to="item.href"
@@ -205,8 +214,8 @@ const showWithdraw = ref(false)
               <img class="size-10 rounded-full" :src="user.imageUrl" alt="" />
             </div>
             <div class="ml-3">
-              <div class="text-base font-medium text-gray-800">{{ user.name }}</div>
-              <div class="text-sm font-medium text-gray-500">{{ user.email }}</div>
+              <div class="text-base font-medium text-gray-800">{{ profile?.name }}</div>
+              <div class="text-sm font-medium text-gray-500">{{ profile?.email }}</div>
             </div>
           </div>
           <div class="mt-3 space-y-1">
@@ -240,27 +249,7 @@ const showWithdraw = ref(false)
         </button>
       </template>
       <div class="p-2">
-        <form action="" class="flex flex-col gap-y-3">
-          <div class="max-w-sm">
-            <label for="input-label" class="block text-sm font-medium mb-2">
-              Amount<span class="text-red-500">*</span>
-            </label>
-            <input
-              name="amount"
-              type="text"
-              id="input-label"
-              class="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-              placeholder="Example: 1000.00"
-            />
-            <!-- <span class="text-sm text-red-500">{{ errors.email }}</span> -->
-          </div>
-          <button
-            class="bg-blue-600 rounded-md py-2.5 text-white hover:bg-blue-700 w-full shadow-sm"
-            type="submit"
-          >
-            {{ "Deposit Now" }}
-          </button>
-        </form>
+        <DepositForm :on-close="() => (showDeposit = false)" />
       </div>
     </Slideover>
 
@@ -272,27 +261,7 @@ const showWithdraw = ref(false)
         </button>
       </template>
       <div class="p-2">
-        <form action="" class="flex flex-col gap-y-3">
-          <div class="max-w-sm">
-            <label for="input-label" class="block text-sm font-medium mb-2">
-              Amount<span class="text-red-500">*</span>
-            </label>
-            <input
-              name="amount"
-              type="text"
-              id="input-label"
-              class="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-              placeholder="Example: 1000.00"
-            />
-            <!-- <span class="text-sm text-red-500">{{ errors.email }}</span> -->
-          </div>
-          <button
-            class="bg-blue-600 rounded-md py-2.5 text-white hover:bg-blue-700 w-full shadow-sm"
-            type="submit"
-          >
-            {{ "Withdraw Money" }}
-          </button>
-        </form>
+        <WithdrawForm :on-close="() => (showWithdraw = false)" />
       </div>
     </Slideover>
   </div>
