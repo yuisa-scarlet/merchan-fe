@@ -9,8 +9,6 @@ import routes from "@/router/index.ts"
 const app = createApp(App)
 app.use(createPinia())
 app.use(routes)
-app.use(VueQueryPlugin, {
-  enableDevtoolsV6Plugin: true,
-})
+app.use(VueQueryPlugin)
 
 app.mount("#app")

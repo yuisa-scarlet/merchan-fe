@@ -44,20 +44,59 @@ const routes = createRouter({
     {
       path: "/client",
       component: ClientLayout,
+      meta: { requiresAuth: true, allowedRoles: ["user"] },
       children: [
         {
           path: "dashboard",
-          name: "dashboard",
+          name: "dashboard.client",
           component: () => import("@/views/dashboard/DashboardView.vue"),
         },
         {
           path: "transactions",
-          name: "transactions",
+          name: "transactions.client",
+          component: () => import("@/views/transaction/TransactionView.vue"),
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      component: ClientLayout,
+      meta: { requiresAuth: true, allowedRoles: ["admin"] },
+      children: [
+        {
+          path: "dashboard",
+          name: "dashboard.admin",
+          component: () => import("@/views/dashboard/DashboardView.vue"),
+        },
+        {
+          path: "transactions",
+          name: "transactions.admin",
           component: () => import("@/views/transaction/TransactionView.vue"),
         },
       ],
     },
   ],
+})
+routes.beforeEach((to, from, next) => {
+  const accessToken = localStorage.getItem("access_token")
+  const role = localStorage.getItem("role")
+
+  if (to.meta.requiresAuth) {
+    if (!accessToken) {
+      return next({ name: "login" })
+    }
+
+    if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role as string)) {
+      return next({ name: "not-found" })
+    }
+  }
+
+  if ((to.name === "login" || to.name === "register") && accessToken) {
+    if (role === "admin") return next({ name: "dashboard.admin" })
+    if (role === "user") return next({ name: "dashboard.client" })
+  }
+
+  return next()
 })
 
 export default routes
