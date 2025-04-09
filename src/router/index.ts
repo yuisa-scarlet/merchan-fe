@@ -50,10 +50,14 @@ const routes = createRouter({
           name: "dashboard",
           component: () => import("@/views/dashboard/DashboardView.vue"),
         },
+        {
+          path: "transactions",
+          name: "transactions",
+          component: () => import("@/views/transaction/TransactionView.vue"),
+        },
       ],
     },
   ],
-  linkActiveClass: "text-indigo-600 font-semibold border-indigo-600",
 })
 
 export default routes
