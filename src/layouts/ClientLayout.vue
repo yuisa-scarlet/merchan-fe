@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLogout } from "@/api/auth"
 import NavLinkDashboard from "@/components/ui/NavLinkDashboard.vue"
 import Slideover from "@/components/ui/Slideover.vue"
 import {
@@ -13,7 +14,10 @@ import {
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from "@heroicons/vue/24/outline"
 import { BanknoteArrowUp, BanknoteArrowDown } from "lucide-vue-next"
 import { ref } from "vue"
+import { useRouter } from "vue-router"
 import { RouterLink, RouterView } from "vue-router"
+
+const router = useRouter()
 
 const user = {
   name: "Tom Cook",
@@ -27,10 +31,20 @@ const navigation = [
   { name: "Transactions", href: "transactions" },
 ]
 
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Sign out", href: "#" },
-]
+const userNavigation = [{ name: "Your Profile", href: "#" }]
+
+const { mutate: logoutMutate } = useLogout()
+
+function handleLogout() {
+  logoutMutate(undefined, {
+    onSuccess: () => {
+      router.push({ name: "home" })
+    },
+    onError: (error) => {
+      console.error("Logout failed", error)
+    },
+  })
+}
 
 const showDeposit = ref(false)
 const showWithdraw = ref(false)
@@ -148,8 +162,17 @@ const showWithdraw = ref(false)
                           active ? 'bg-gray-100 outline-none' : '',
                           'block px-4 py-2 text-sm text-gray-700',
                         ]"
-                        >{{ item.name }}</RouterLink
                       >
+                        {{ item.name }}
+                      </RouterLink>
+                    </MenuItem>
+                    <MenuItem>
+                      <button
+                        @click="handleLogout"
+                        class="w-full hover:bg-gray-100 text-left block px-4 py-2 text-sm text-gray-700"
+                      >
+                        Sign out
+                      </button>
                     </MenuItem>
                   </MenuItems>
                 </transition>
@@ -172,9 +195,9 @@ const showWithdraw = ref(false)
 
       <DisclosurePanel class="sm:hidden">
         <div class="space-y-1 pb-3 pt-2">
-          <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href">{{
-            item.name
-          }}</DisclosureButton>
+          <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href">
+            {{ item.name }}
+          </DisclosureButton>
         </div>
         <div class="border-t border-gray-200 pb-3 pt-4">
           <div class="flex items-center px-4">
@@ -193,8 +216,9 @@ const showWithdraw = ref(false)
               as="a"
               :href="item.href"
               class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              >{{ item.name }}</DisclosureButton
             >
+              {{ item.name }}
+            </DisclosureButton>
           </div>
         </div>
       </DisclosurePanel>
@@ -215,6 +239,29 @@ const showWithdraw = ref(false)
           &times;
         </button>
       </template>
+      <div class="p-2">
+        <form action="" class="flex flex-col gap-y-3">
+          <div class="max-w-sm">
+            <label for="input-label" class="block text-sm font-medium mb-2">
+              Amount<span class="text-red-500">*</span>
+            </label>
+            <input
+              name="amount"
+              type="text"
+              id="input-label"
+              class="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+              placeholder="Example: 1000.00"
+            />
+            <!-- <span class="text-sm text-red-500">{{ errors.email }}</span> -->
+          </div>
+          <button
+            class="bg-blue-600 rounded-md py-2.5 text-white hover:bg-blue-700 w-full shadow-sm"
+            type="submit"
+          >
+            {{ "Deposit Now" }}
+          </button>
+        </form>
+      </div>
     </Slideover>
 
     <Slideover v-model="showWithdraw">
@@ -224,6 +271,29 @@ const showWithdraw = ref(false)
           &times;
         </button>
       </template>
+      <div class="p-2">
+        <form action="" class="flex flex-col gap-y-3">
+          <div class="max-w-sm">
+            <label for="input-label" class="block text-sm font-medium mb-2">
+              Amount<span class="text-red-500">*</span>
+            </label>
+            <input
+              name="amount"
+              type="text"
+              id="input-label"
+              class="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+              placeholder="Example: 1000.00"
+            />
+            <!-- <span class="text-sm text-red-500">{{ errors.email }}</span> -->
+          </div>
+          <button
+            class="bg-blue-600 rounded-md py-2.5 text-white hover:bg-blue-700 w-full shadow-sm"
+            type="submit"
+          >
+            {{ "Withdraw Money" }}
+          </button>
+        </form>
+      </div>
     </Slideover>
   </div>
 </template>
