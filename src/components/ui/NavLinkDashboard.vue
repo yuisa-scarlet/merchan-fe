@@ -19,7 +19,7 @@ const { item } = toRefs(props)
         'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors border',
         isActive
           ? 'bg-white text-gray-950 border border-slate-200'
-          : 'text-gray-700 hover:text-gray-700 hover:bg-gray-100 hover:border hover:border-slate-200 border-transparent',
+          : 'text-gray-700 hover:text-gray-800 hover:bg-gray-100 hover:border hover:border-slate-200 border-transparent',
       ]"
     >
       {{ item.name }}
