@@ -1,9 +1,62 @@
 <script setup lang="ts">
 import { useGetTransactionDetail } from "@/api/transaction"
 import { useRoute } from "vue-router"
+import { useStorePayment } from "@/api/payment"
+import Dialog from "@/components/ui/Dialog.vue"
+import { ref } from "vue"
+import type { AxiosError } from "axios"
+
+const isModalOpen = ref(false)
+const modalType = ref<"success" | "error">("success")
+const modalMessage = ref("")
 
 const route = useRoute()
 const { data: transaction } = useGetTransactionDetail(route.params.id as string)
+
+const { mutate: submitPayment, isPending } = useStorePayment()
+
+function handlePayment() {
+  if (!transaction.value) return
+
+  const paymentData: {
+    externalRef: string
+    amount: number
+    status: "paid" | "failed" | "canceled"
+  } = {
+    externalRef: transaction.value.externalRef,
+    amount: transaction.value.amount,
+    status: "paid",
+  }
+
+  submitPayment(paymentData, {
+    onSuccess: (response) => {
+      console.info("Payment successful:", response)
+      modalType.value = "success"
+      modalMessage.value = "Pembayaran berhasil"
+      isModalOpen.value = true
+
+      setTimeout(() => {
+        window.close()
+      }, 2000)
+    },
+    onError: (error: Error) => {
+      const axiosError = error as AxiosError
+      const errors = (axiosError.response?.data as { errors?: { external_ref?: string[] } })?.errors
+        ?.external_ref
+      const externalRefMessage = errors?.[0]
+        ? errors[0]
+        : "Terjadi kesalahan pada sistem. Silakan coba lagi."
+
+      modalType.value = "error"
+      modalMessage.value = externalRefMessage
+      isModalOpen.value = true
+    },
+  })
+}
+
+function closeModal() {
+  isModalOpen.value = false
+}
 </script>
 
 <template>
@@ -41,12 +94,16 @@ const { data: transaction } = useGetTransactionDetail(route.params.id as string)
           </div>
 
           <button
+            @click="handlePayment"
             class="bg-gray-800 text-white w-full py-2.5 rounded-md hover:bg-gray-950 transition"
           >
-            {{ "Bayar Sekarang" }}
+            {{ isPending ? "Processing..." : "Bayar Sekarang" }}
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal Component -->
+  <Dialog :is-open="isModalOpen" :type="modalType" :message="modalMessage" @close="closeModal" />
 </template>
