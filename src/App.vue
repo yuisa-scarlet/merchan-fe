@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from "vue-router"
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools"
+
+const isLocal = import.meta.env.VITE_APP_ENV === "local"
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" />
+  <VueQueryDevtools v-if="isLocal" initialIsOpen />
+  <RouterView />
 </template>
-
-<style scoped>
-
-</style>
