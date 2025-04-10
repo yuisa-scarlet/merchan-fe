@@ -26,6 +26,8 @@ const onSubmit = handleSubmit((values) => {
       console.info("Deposit successful", data)
       isSubmitting.value = false
       props.onClose()
+
+      window.open(`${import.meta.env.VITE_APP_URL}/transaction/${data?.id}`, "_blank")
     },
     onError: (error) => {
       console.error("Deposit failed", error)

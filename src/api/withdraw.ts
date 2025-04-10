@@ -1,5 +1,7 @@
+import type { Transaction } from "@/types/Transaction"
 import { axiosInstance } from "@/utils/axios"
 import { useMutation, useQueryClient } from "@tanstack/vue-query"
+import camelcaseKeys from "camelcase-keys"
 import { z } from "zod"
 
 /* =============== *
@@ -16,9 +18,9 @@ const withdrawPayloadSchema = z.object({
 })
 type WithdrawPayloadSchema = z.infer<typeof withdrawPayloadSchema>
 
-async function withdraw(data: WithdrawPayloadSchema): Promise<void> {
+async function withdraw(data: WithdrawPayloadSchema): Promise<Transaction> {
   const response = await axiosInstance.post("/v1/withdrawal", data)
-  return response.data.data
+  return camelcaseKeys(response.data.data) as Transaction
 }
 function useStoreWithdraw() {
   const queryClient = useQueryClient()

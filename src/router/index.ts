@@ -65,6 +65,11 @@ const routes = createRouter({
         },
       ],
     },
+    {
+      path: "/transaction/:id",
+      name: "transaction.payment",
+      component: () => import("@/views/transaction/TransactionPaymentView.vue"),
+    },
   ],
 })
 routes.beforeEach((to, from, next) => {

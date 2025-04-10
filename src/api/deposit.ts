@@ -1,5 +1,7 @@
+import type { Transaction } from "@/types/Transaction"
 import { axiosInstance } from "@/utils/axios"
 import { useMutation, useQueryClient } from "@tanstack/vue-query"
+import camelcaseKeys from "camelcase-keys"
 import { z } from "zod"
 
 /* ============ *
@@ -16,9 +18,9 @@ const depositPayloadSchema = z.object({
 })
 type DepositPayloadSchema = z.infer<typeof depositPayloadSchema>
 
-async function deposit(data: DepositPayloadSchema): Promise<void> {
+async function deposit(data: DepositPayloadSchema): Promise<Transaction> {
   const response = await axiosInstance.post("/v1/deposit", data)
-  return response.data.data
+  return camelcaseKeys(response.data.data) as Transaction
 }
 function useStoreDeposit() {
   const queryClient = useQueryClient()
